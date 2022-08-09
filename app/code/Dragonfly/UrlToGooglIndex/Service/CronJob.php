@@ -37,8 +37,8 @@ class CronJob
      */
     public function execute()
     {
-        $this->serviceSendToIndex->execute();
-        sleep(3);
         $this->reListUrlList->reload();
+        sleep(3);
+        $this->serviceSendToIndex->execute();
     }
 }

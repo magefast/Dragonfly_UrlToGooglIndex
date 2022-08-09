@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+  ~ @author magefast@gmail.com www.magefast.com
+  -->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="url_to_googl_index_processing" resource="default" engine="innodb" comment="">
+        <index referenceId="URL_TO_GOOGL_INDEX_PROCESSING_ENTITY_ID" indexType="btree">
+            <column name="entity_id"/>
+        </index>
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="text" name="url" nullable="false"/>
+        <column xsi:type="varchar" name="added_date" nullable="false" length="10"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
+    <table name="url_to_googl_index_list" resource="default" engine="innodb" comment="">
+        <index referenceId="URL_TO_GOOGL_INDEX_LIST_ENTITY_ID" indexType="btree">
+            <column name="entity_id"/>
+        </index>
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="text" name="url" nullable="false"/>
+        <column xsi:type="int" name="prio" unsigned="true" nullable="false" identity="false"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
+</schema>

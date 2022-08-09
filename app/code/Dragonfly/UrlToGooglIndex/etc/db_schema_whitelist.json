@@ -1,0 +1,28 @@
+{
+    "url_to_googl_index_list": {
+        "column": {
+            "entity_id": true,
+            "url": true,
+            "prio": true
+        },
+        "index": {
+            "URL_TO_GOOGL_INDEX_LIST_ENTITY_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "url_to_googl_index_processing": {
+        "column": {
+            "entity_id": true,
+            "url": true,
+            "added_date": true
+        },
+        "index": {
+            "URL_TO_GOOGL_INDEX_PROCESSING_ENTITY_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

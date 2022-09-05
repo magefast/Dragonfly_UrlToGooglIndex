@@ -11,12 +11,15 @@ declare(strict_types=1);
 
 namespace Dragonfly\UrlToGooglIndex\Service;
 
+use Google\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
+use Zend_Log;
+use Zend_Log_Writer_Stream;
 
 class GoogleApi
 {
@@ -41,6 +44,11 @@ class GoogleApi
     private $fileDriver;
 
     /**
+     * @var string
+     */
+    private $authFile;
+
+    /**
      * @param DirectoryList $directoryList
      * @param File $fileDriver
      */
@@ -53,6 +61,14 @@ class GoogleApi
         $this->fileDriver = $fileDriver;
 
         $this->getGoogleClient();
+    }
+
+    private function getGoogleClient()
+    {
+        $dir = $this->directoryList->getRoot();
+        require_once $dir . '/service/google-api-php-client-main/vendor/autoload.php';
+
+        $this->googleClient = new Client();
     }
 
     /**
@@ -90,16 +106,41 @@ class GoogleApi
     }
 
     /**
+     * @param string $value
+     * @return bool
+     * @throws FileSystemException
+     * @throws LocalizedException
+     */
+    public function setAuthFile(string $value)
+    {
+        $dirRoot = $this->directoryList->getRoot();
+
+        $filePath = $dirRoot . '/' . $value;
+
+        if ($this->fileDriver->isExists($filePath)) {
+            $this->authFile = $filePath;
+            return true;
+        }
+
+        throw new LocalizedException(__('Not Exist Auth file for Google API.'));
+    }
+
+    /**
      * @throws FileSystemException
      * @throws LocalizedException
      */
     private function getAuthFile(): string
     {
+        if ($this->authFile !== null) {
+            return $this->authFile;
+        }
+
         $dirRoot = $this->directoryList->getRoot();
 
         $filePath = $dirRoot . '/' . self::AUTH_FILE_PATH;
 
         if ($this->fileDriver->isExists($filePath)) {
+            $this->authFile = $filePath;
             return $filePath;
         }
 
@@ -112,17 +153,9 @@ class GoogleApi
     private function log($value)
     {
         $dir = $this->directoryList->getRoot();
-        $writer = new \Zend_Log_Writer_Stream($dir . '/var/log/googl_indexing_api.log');
-        $logger = new \Zend_Log();
+        $writer = new Zend_Log_Writer_Stream($dir . '/var/log/googl_indexing_api.log');
+        $logger = new Zend_Log();
         $logger->addWriter($writer);
         $logger->info($value);
-    }
-
-    private function getGoogleClient()
-    {
-        $dir = $this->directoryList->getRoot();
-        require_once $dir . '/service/google-api-php-client-main/vendor/autoload.php';
-
-        $this->googleClient = new \Google\Client();
     }
 }

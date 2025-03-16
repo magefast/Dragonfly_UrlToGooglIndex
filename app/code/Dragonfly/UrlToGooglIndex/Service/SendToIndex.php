@@ -28,35 +28,35 @@ class SendToIndex
     /**
      * @var array
      */
-    private $candidateUrlToGooglIndex = [];
+    private array $candidateUrlToGooglIndex = [];
 
     /**
      * @var UrlListCollectionFactory
      */
-    private $urlListCollectionFactory;
+    private UrlListCollectionFactory $urlListCollectionFactory;
 
     /**
      * @var UrlProcessingCollectionFactory
      */
-    private $urlProcessingCollectionFactory;
+    private UrlProcessingCollectionFactory $urlProcessingCollectionFactory;
 
     /**
      * @var UrlProcessing
      */
-    private $urlProcessingResourceModel;
+    private UrlProcessing $urlProcessingResourceModel;
     /**
      * @var SaveCommand
      */
-    private $urlProcessingSaveCommand;
+    private SaveCommand $urlProcessingSaveCommand;
     /**
      * @var UrlProcessingInterfaceFactory
      */
-    private $urlProcessingInterfaceFactory;
+    private UrlProcessingInterfaceFactory $urlProcessingInterfaceFactory;
 
     /**
      * @var GoogleApi
      */
-    private $googleApiService;
+    private GoogleApi $googleApiService;
 
     /**
      * @param UrlListCollectionFactory $urlListCollectionFactory
@@ -81,6 +81,28 @@ class SendToIndex
         $this->urlProcessingSaveCommand = $urlProcessingSaveCommand;
         $this->urlProcessingInterfaceFactory = $urlProcessingInterfaceFactory;
         $this->googleApiService = $googleApiService;
+    }
+
+    public function indexUrls($urlArray)
+    {
+
+        $countAdded = 1;
+        foreach ($urlArray as $url) {
+            if (self::LIMIT_PER_DAY >= $countAdded) {
+                $countAdded++;
+
+                try {
+                    $result = $this->addGooglIndex($url);
+                    var_dump('SUCCESS');
+                    var_dump($url);
+                } catch (LocalizedException $exception) {
+                    var_dump($exception->getMessage());
+                    var_dump($url);
+                }
+            }
+        }
+
+        return;
     }
 
     /**

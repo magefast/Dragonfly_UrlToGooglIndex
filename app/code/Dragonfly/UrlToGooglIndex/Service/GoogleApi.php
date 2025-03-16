@@ -65,10 +65,10 @@ class GoogleApi
 
     private function getGoogleClient()
     {
-        $dir = $this->directoryList->getRoot();
-        require_once $dir . '/service/google-api-php-client-main/vendor/autoload.php';
+//        $dir = $this->directoryList->getRoot();
+//        require_once $dir . '/service/google-api-php-client-main/vendor/autoload.php';
 
-        $this->googleClient = new Client();
+        $this->googleClient = new \Google\Client();
     }
 
     /**
@@ -102,7 +102,7 @@ class GoogleApi
         }
 
         $this->log($status_code . " $url");
-        throw new LocalizedException(__('ERROR Code: %1', $status_code));
+        throw new LocalizedException(__('ERROR Code: %1', $status_code.$response->getReasonPhrase()));
     }
 
     /**
